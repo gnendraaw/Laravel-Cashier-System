@@ -5,6 +5,8 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Product;
+use App\Models\User;
+use App\Models\Cart;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,12 +17,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        User::factory()->create([
+            'name' => 'ganendra',
+            'email' => 'ganendra@email.com',
+            'password' => bcrypt('password'),
+            'created_at' => today(),
+            'updated_at' => today(),
+        ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        Cart::create();
 
         Product::factory(12)->create();
     }

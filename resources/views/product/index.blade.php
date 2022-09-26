@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row my-3">
         <div class="col">
-            <a href="" class="btn btn-primary">Cart</a>
+            <a href="{{route('cart.index')}}" class="btn btn-primary">Cart</a>
         </div>
     </div>
     <div class="row g-3">
@@ -32,18 +32,37 @@
 
 <script src="{{asset('js/jquery.js')}}"></script>
 <script>
-    $.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-    });
-
     $(document).ready(function() {
+        $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+        });
+
         $('.productBtn').on('click', function() {
             const id = $(this).data('id');
             const qty = $('#qty'+id).val();
+
             console.log('id', id);
             console.log('qty', qty);
+
+            if(qty <= 0)
+                console.log('qty must be more than 0');
+            else
+            {
+                $.ajax({
+                    url: "{{route('addToCart')}}",
+                    method: "post",
+                    data: {
+                        'id' : id,
+                        'qty' : qty
+                    },
+                    success:function(data) {
+                        console.log(data);
+                    },
+                });
+            }
+
         });
     });
 </script>

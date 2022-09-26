@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CartProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,3 +28,7 @@ Auth::routes();
 Route::controller(ProductController::class)->middleware('auth')->group(function() {
     Route::get('/product', 'index')->name('product.index');
 });
+
+Route::post('/addToCart', [CartProductController::class, 'addToCart'])->name('addToCart');
+
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
