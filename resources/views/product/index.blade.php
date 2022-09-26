@@ -13,8 +13,15 @@
             <div class=" card">
                 <div class="card-body">
                     <p class="fw-bold fs-4">{{$product->name}}</p>
-                    <p class="fs-6">{{$product->stock}}</p>
-                    <button class="btn btn-primary">Add to cart</button>
+                    <p class="fs-6">Stock : {{$product->stock}}</p>
+                    <div class="row justify-content-start">
+                        <div class="col-3">
+                            <input type="number" class="form-control" name="" id="qty{{$product->id}}" min="0" max="99">
+                        </div>
+                        <div class="col-9">
+                            <button type="button" class="btn btn-primary productBtn" data-id="{{$product->id}}">Add to cart</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -22,3 +29,21 @@
     </div>
 </div>
 @endsection
+
+<script src="{{asset('js/jquery.js')}}"></script>
+<script>
+    $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+    });
+
+    $(document).ready(function() {
+        $('.productBtn').on('click', function() {
+            const id = $(this).data('id');
+            const qty = $('#qty'+id).val();
+            console.log('id', id);
+            console.log('qty', qty);
+        });
+    });
+</script>
