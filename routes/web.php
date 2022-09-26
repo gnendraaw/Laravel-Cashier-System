@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +15,14 @@ use App\Http\Controllers\ProductController;
 |
 */
 
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::controller(ProductController::class)->group(function() {
+Auth::routes();
+
+Route::controller(ProductController::class)->middleware('auth')->group(function() {
     Route::get('/product', 'index')->name('product.index');
 });
