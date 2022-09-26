@@ -13,12 +13,20 @@
             <div class=" card">
                 <div class="card-body">
                     <p class="fw-bold fs-4">{{$product->name}}</p>
-                    <p class="fs-6">Stock : {{$product->stock}}</p>
+                    <p class="fs-6">Stock : <span class="productStock">{{$product->stock}}</span></p>
                     <div class="row justify-content-start">
-                        <div class="col-3">
-                            <input type="number" class="form-control" name="" id="qty{{$product->id}}" min="0" max="99">
-                        </div>
-                        <div class="col-9">
+                            <div class="row justify-content-center text-center align-items-center">
+                                <div class="col">
+                                    <button class="btn btn-primary minProd" data-id="{{$product->id}}""> - </button>
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" id="qty{{$product->id}}" value="0">
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-primary plusProd" data-id="{{$product->id}}" data-max="{{$product->stock}}"> + </button>
+                                </div>
+                            </div>
+                        <div class="col">
                             <button type="button" class="btn btn-primary productBtn" data-id="{{$product->id}}">Add to cart</button>
                         </div>
                     </div>
@@ -37,6 +45,30 @@
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
+        });
+
+        $('.plusProd').on('click', function() {
+            const id = $(this).data('id');
+            const max = $(this).data('max');
+            const qty = $('#qty'+id);
+            var qtyVal = qty.val();
+            
+            if(qtyVal < max)
+                qtyVal++;
+
+            qty.val(qtyVal);
+        });
+
+        $('.minProd').on('click', function() {
+            const id = $(this).data('id');
+            const min = 0;
+            const qty = $('#qty'+id);
+            var qtyVal = qty.val();
+
+            if(qtyVal > min)
+                qtyVal--;
+                
+            qty.val(qtyVal);
         });
 
         $('.productBtn').on('click', function() {
