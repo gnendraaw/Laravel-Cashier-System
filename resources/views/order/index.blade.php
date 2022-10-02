@@ -34,8 +34,8 @@
                 url: "{{route('order.addProd')}}",
                 method: "post",
                 data: {"id" : id},
-                success:function() {
-                    console.log('added to cart!');
+                success:function(data) {
+                    console.log(data);
                 }
             });
         });

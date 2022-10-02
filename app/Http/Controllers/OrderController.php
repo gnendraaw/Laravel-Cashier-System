@@ -36,13 +36,22 @@ class OrderController extends Controller
     public function addProd(Request $request)
     {
         $product = $this->getProduct($request->id);
+        $prodInCart = Cart::where('product_id', $product->id)->first();
 
         // validate
-        
+        if(!$prodInCart)
+        {
+            $this->cart->product_id = $product->id;
+            $this->cart->order_id = $this->order->id;
+            $this->cart->qty = 1;
+            $this->cart->save();
 
-        $this->cart->product_id = $product->id;
-        $this->cart->order_id = $this->order->id;
-        $this->cart->qty = 1;
-        $this->cart->save();
+            return 'added to cart';
+        }
+
+        $prodInCart->qty++;
+        $prodInCart->save();
+
+        return 'order updated';
     }
 }
