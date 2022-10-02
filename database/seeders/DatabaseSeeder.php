@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Cart;
+use App\Models\Order;
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,14 +19,14 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         User::factory()->create([
-            'name' => 'ganendra',
-            'email' => 'ganendra@email.com',
+            'name' => 'admin',
+            'email' => 'admin@admin.com',
             'password' => bcrypt('password'),
             'created_at' => today(),
             'updated_at' => today(),
         ]);
 
-        Cart::create();
+        Order::create();
 
         Product::factory(12)->create();
     }

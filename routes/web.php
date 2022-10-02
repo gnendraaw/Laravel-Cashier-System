@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CartProductController;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,10 +26,9 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::controller(ProductController::class)->middleware('auth')->group(function() {
-    Route::get('/product', 'index')->name('product.index');
+Route::middleware('auth')->group(function() {
+    Route::controller(OrderController::class)->group(function() {
+        Route::get('/order', 'index')->name('order.index');
+        Route::post('/order/addProd', 'addProd')->name('order.addProd');
+    });
 });
-
-Route::post('/addToCart', [CartProductController::class, 'addToCart'])->name('addToCart');
-
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');

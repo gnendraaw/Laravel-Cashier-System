@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->boolean('isUsed')->default(false);
             $table->timestamps();
         });
     }

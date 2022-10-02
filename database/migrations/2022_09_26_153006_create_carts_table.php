@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->boolean('isUsed')->default(false);
+            $table->foreignId('order_id');
+            $table->foreignId('product_id');
+            $table->integer('qty');
             $table->timestamps();
         });
     }
