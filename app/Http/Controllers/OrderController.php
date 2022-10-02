@@ -21,10 +21,12 @@ class OrderController extends Controller
     public function index()
     {
         $products = Product::orderBy('name')->get();
+        $cart = Cart::where('order_id', $this->order->id)->get();
 
         return view('order.index', [
             'title' => 'Order',
             'products' => $products,
+            'cart' => $cart,
         ]);
     }
 
