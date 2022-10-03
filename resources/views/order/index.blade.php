@@ -1,4 +1,3 @@
-<section id="orderIndex">
 @extends('layouts.app')
 
 @section('content')
@@ -22,13 +21,12 @@
         <div class="col-4">
             <div class="container" id="cartList">
                 @foreach($cart as $item)
-                <div class="card m-3">
+                <div class="card m-3 cartItem" data-id="{{$item->product_id}}">
                     <div class="card-body">
                         <p>{{$item->product->name}}</p>
-                        <p>{{$item->qty}}</p>
                         <div class="row">
                             <button class="btn btn-primary minBtn">-</button>
-                            <input type="number" class="form-control prodQty" id="modalProdStock" min="0">
+                            <input type="number"  class="form-control cartItemQty" value="1" min="1" max="{{$item->product->stock}}">
                             <button class="btn btn-primary plusBtn">+</button>
                         </div>
                     </div>
@@ -39,7 +37,6 @@
     </div>
 </div>
 @endsection
-</section>
 
 <script src="{{asset('js/jquery.js')}}"></script>
 <script>
@@ -54,6 +51,7 @@
         });
 
         addOrderItem();
+        plusBtn();
 
         function addOrderItem()
         {
@@ -71,6 +69,18 @@
                     console.log('items', orderItems)
                     console.log('product', products[index])
                 }
+            });
+        }
+
+        function plusBtn()
+        {
+            $('.plusBtn').click(function() {
+                const cartItem = $(this).parents('.cartItem');
+                const id = cartItem.data('id');
+
+                console.log('id', id);
+
+                
             });
         }
 
@@ -96,14 +106,22 @@
                 'qty' : 1,
             };
 
-            var cartItem = '<div class="card m-3"><div class="card-body"><p>'+products[index]['name']+'</p><div class="row"><button class="btn btn-primary minBtn">-</button><input type="number" class="form-control prodQty" id="" min="1" value="1"><button class="btn btn-primary plusBtn">+</button></div></div></div>';
+            var cartItem = `
+                <div class="card m-3 cartItem" data-id="` + id + `">
+                    <div class="card-body">
+                        <p>`+ products[index]['name'] +`</p>
+                        <div class="row">
+                            <button class="btn btn-primary minBtn">-</button>
+                            <input type="number"  class="form-control cartItemQty" value="1" min="1" max="`+ products[index]['stock'] +`">
+                            <button class="btn btn-primary plusBtn">+</button>
+                        </div>
+                    </div>
+                </div>`;
 
             $('#cartList').append(cartItem);
+
+            plusBtn();
         }
-
-        $('.plusBtn').click(function() {
-
-        });
 
         // $('.prodBtn').click(function() {
         //     const id = $(this).data('id');
