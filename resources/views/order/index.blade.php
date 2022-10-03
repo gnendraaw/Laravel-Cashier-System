@@ -78,9 +78,11 @@
                 const cartItem = $(this).parents('.cartItem');
                 const id = cartItem.data('id');
 
-                console.log('id', id);
+                const product = products.find(function(product, index) {
+                    if(product.id == id) return true;
+                });
 
-                
+                console.log('id', id);
             });
         }
 
