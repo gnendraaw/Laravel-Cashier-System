@@ -48,12 +48,10 @@ class OrderController extends Controller
             $this->cart->qty = 1;
             $this->cart->save();
 
-            return 'added to cart';
+            return $this->getProduct($product->id);
         }
 
         $prodInCart->qty++;
         $prodInCart->save();
-
-        return 'order updated';
     }
 }
