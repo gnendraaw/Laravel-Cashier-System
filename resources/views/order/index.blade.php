@@ -21,13 +21,48 @@
         <div class="col-4">
             <div class="container">
                 <p class="h3 fw-bold">Total Price : <span id="totalPrice"> Rp 00</span></p>
-                <button id="confirmOrder" class="btn btn-primary" disabled>Pay</button>
+                <button id="confirmOrder" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#paymentModal" disabled>Pay</button>
             </div>
             <div class="container" id="cartList">
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Payment</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-6 my-3">
+                <p class="h5 fw-bold">Total Price</p>
+                <p class="h5">Rp <span id="modalTotalPrice">00</span></p>
+            </div>
+            <div class="col-6">
+                <div class="my-3">
+                    <p class="h5 fw-bold">Input Payment</p>
+                    <input type="number" id="modalPayInput" min="0" class="form-control">
+                </div>
+                <div class="my-3">
+                    <p class="h5 fw-bold">changes</p>
+                    <p class="h5">Rp <span id="modalChanges">00</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmPayment" disabled>Submit Payment</button>
+    </div>
+    </div>
+</div>
+</div>
+
 @endsection
 
 <script src="{{asset('js/jquery.js')}}"></script>
@@ -49,6 +84,8 @@
         plusBtn();
         minBtn();
         confirmOrder();
+        confirmPayment();
+        checkPayInput();
 
         function setProductList()
         {
@@ -88,6 +125,15 @@
         function confirmOrder()
         {
             $('#confirmOrder').on('click', function() {
+                const modal = $('#paymentModal');
+
+                modal.find('#modalTotalPrice').html(total);
+            });
+        }
+
+        function confirmPayment()
+        {
+            $('#confirmPayment').on('click', function() {
                 $.ajax({
                     url: "{{route('order.addOrder')}}",
                     method: "post",
@@ -100,6 +146,27 @@
                     }
                 });
             });
+        }
+
+        function checkPayInput()
+        {
+            $('#modalPayInput').on('keyup', function() {
+                const val = $(this).val();
+                const changes = val - total;
+
+                disableConfirmPayment(changes);
+                updateChanges(changes);
+            });
+        }
+
+        function updateChanges(val)
+        {
+            $('#modalChanges').html(val);
+        }
+
+        function disableConfirmPayment(changes)
+        {
+            $('#confirmPayment').prop('disabled', changes >= 0 ? false : true);
         }
 
         function disablePayBtn()
