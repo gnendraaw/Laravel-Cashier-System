@@ -29,6 +29,6 @@ Auth::routes();
 Route::middleware('auth')->group(function() {
     Route::controller(OrderController::class)->group(function() {
         Route::get('/order', 'index')->name('order.index');
-        Route::post('/order/addProd', 'addProd')->name('order.addProd');
+        Route::post('/order/addOrder', 'addOrder')->name('order.addOrder');
     });
 });

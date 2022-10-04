@@ -21,6 +21,7 @@
         <div class="col-4">
             <div class="container">
                 <p class="h3 fw-bold">Total Price : <span id="totalPrice"> Rp 00</span></p>
+                <button id="confirmOrder" class="btn btn-primary" disabled>Pay</button>
             </div>
             <div class="container" id="cartList">
             </div>
@@ -47,6 +48,7 @@
         addCartItem();
         plusBtn();
         minBtn();
+        confirmOrder();
 
         function setProductList()
         {
@@ -83,6 +85,28 @@
             });
         }
 
+        function confirmOrder()
+        {
+            $('#confirmOrder').on('click', function() {
+                $.ajax({
+                    url: "{{route('order.addOrder')}}",
+                    method: "post",
+                    data : {
+                        "orderItems" : orderItems
+                    },
+                    success:function(data)
+                    {
+                        console.log(data)
+                    }
+                });
+            });
+        }
+
+        function disablePayBtn()
+        {
+            $('#confirmOrder').prop('disabled', total > 0 ? false : true);
+        }
+
         function minBtn()
         {
             $('#cartList').on('click', '.minBtn', function() {
@@ -106,7 +130,9 @@
         {
             total += val;
 
-            $('#totalPrice').html('Rp ' + total)
+            $('#totalPrice').html('Rp ' + total);
+
+            disablePayBtn();
 
             console.log('total', total)
         }
@@ -159,8 +185,10 @@
         function appendItem(id)
         {
             orderItems[id] = {
+                'id' : id,
                 'product' : productList[id]['name'],
                 'qty' : 1,
+                'price' : productList[id]['price'],
             };
 
             updateTotal(productList[id]['price']);
@@ -180,20 +208,5 @@
 
             $('#cartList').append(cartItem);
         }
-
-        // $('.prodBtn').click(function() {
-        //     const id = $(this).data('id');
-
-        //     $.ajax({
-        //         url: "{{route('order.addProd')}}",
-        //         method: "post",
-        //         data: {
-        //             "id" : id
-        //         },
-        //         success:function(data) {
-        //             console.log(data);
-        //         }
-        //     });
-        // });
     });
 </script>

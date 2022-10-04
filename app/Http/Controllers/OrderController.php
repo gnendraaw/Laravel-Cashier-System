@@ -9,24 +9,13 @@ use App\Models\Cart;
 
 class OrderController extends Controller
 {
-    protected $order;
-    protected $cart;
-
-    public function __construct()
-    {
-        $this->order = Order::where('isUsed', false)->first();
-        $this->cart = new Cart();
-    }
-
     public function index()
     {
         $products = Product::orderBy('name')->get();
-        $cart = Cart::where('order_id', $this->order->id)->get();
 
         return view('order.index', [
             'title' => 'Order',
             'products' => $products,
-            'cart' => $cart,
         ]);
     }
 
@@ -35,23 +24,29 @@ class OrderController extends Controller
         return Product::where('id', $id)->first();;
     }
 
-    public function addProd(Request $request)
+    public function addOrder(Request $request)
     {
-        $product = $this->getProduct($request->id);
-        $prodInCart = Cart::where('product_id', $product->id)->first();
+        $order = Order::where('isUsed', 0)->first();
+        $items = $request->orderItems;
 
-        // validate
-        if(!$prodInCart)
+        foreach($items as $item)
         {
-            $this->cart->product_id = $product->id;
-            $this->cart->order_id = $this->order->id;
-            $this->cart->qty = 1;
-            $this->cart->save();
+            $this->updateProdStock($item['id'], $item['qty']);
 
-            return $this->getProduct($product->id);
+            $cart = new Cart;
+            $cart->order_id = $order->id;
+            $cart->product_id = $item['id'];
+            $cart->qty = $item['qty'];
+            $cart->save();
         }
 
-        $prodInCart->qty++;
-        $prodInCart->save();
+        return 'success';
+    }
+
+    public function updateProdStock($id, $qty)
+    {
+        $prod = Product::where('id', $id)->first();
+        $prod->stock -= $qty;
+        $prod->save();
     }
 }
