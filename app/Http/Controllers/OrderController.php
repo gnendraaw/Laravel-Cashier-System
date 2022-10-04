@@ -40,7 +40,18 @@ class OrderController extends Controller
             $cart->save();
         }
 
+        $this->addNewOrderTable($order);
+
         return 'success';
+    }
+
+    public function addNewOrderTable($order)
+    {
+        $order->isUsed = 1;
+        $order->save();
+
+        $order = new Order;
+        $order->save();
     }
 
     public function updateProdStock($id, $qty)

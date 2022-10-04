@@ -63,6 +63,24 @@
 </div>
 </div>
 
+{{-- payment success modal --}}
+<div class="modal fade" id="paySuccessModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Payment</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <p class="h1 fw-bold">Payment Success!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="printInvoice">Print Invoice</button>
+    </div>
+    </div>
+</div>
+</div>
 @endsection
 
 <script src="{{asset('js/jquery.js')}}"></script>
@@ -72,6 +90,7 @@
         var productList = {};
         var orderItems = {};
         var total = 0;
+        var changes = 0;
 
         $.ajaxSetup({
             headers: {
@@ -86,6 +105,20 @@
         confirmOrder();
         confirmPayment();
         checkPayInput();
+
+        function reset()
+        {
+            orderItems = {};
+            total = 0;
+            changes = 0;
+
+            setProductList();
+            disableConfirmPayment();
+
+            $('#modalTotalPrice').html(0);
+            $('#modalPayInput').val(0);
+            $('#modalChanges').html(0);
+        }
 
         function setProductList()
         {
@@ -142,7 +175,9 @@
                     },
                     success:function(data)
                     {
-                        console.log(data)
+                        console.log(data);
+                        showSuccessModal();
+                        reset();
                     }
                 });
             });
@@ -152,26 +187,31 @@
         {
             $('#modalPayInput').on('keyup', function() {
                 const val = $(this).val();
-                const changes = val - total;
+                changes = val - total;
 
-                disableConfirmPayment(changes);
-                updateChanges(changes);
+                disableConfirmPayment();
+                updateChanges();
             });
         }
 
-        function updateChanges(val)
+        function updateChanges()
         {
-            $('#modalChanges').html(val);
+            $('#modalChanges').html(changes);
         }
 
-        function disableConfirmPayment(changes)
+        function disableConfirmPayment()
         {
-            $('#confirmPayment').prop('disabled', changes >= 0 ? false : true);
+            $('#confirmPayment').prop('disabled', changes >= 0 && total > 0 ? false : true);
         }
 
         function disablePayBtn()
         {
             $('#confirmOrder').prop('disabled', total > 0 ? false : true);
+        }
+
+        function showSuccessModal()
+        {
+            $('#paySuccessModal').modal('show');
         }
 
         function minBtn()
