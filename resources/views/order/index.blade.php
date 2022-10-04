@@ -19,6 +19,9 @@
             </div>
         </div>
         <div class="col-4">
+            <div class="container">
+                <p class="h3 fw-bold">Total Price : <span id="totalPrice"> Rp 00</span></p>
+            </div>
             <div class="container" id="cartList">
             </div>
         </div>
@@ -32,6 +35,7 @@
         var products = <?php echo json_encode($products) ?>;
         var productList = {};
         var orderItems = {};
+        var total = 0;
 
         $.ajaxSetup({
             headers: {
@@ -98,6 +102,15 @@
             });
         }
 
+        function updateTotal(val)
+        {
+            total += val;
+
+            $('#totalPrice').html('Rp ' + total)
+
+            console.log('total', total)
+        }
+
         function updateProdStock(id, val)
         {
             productList[id]['stock'] += val;
@@ -114,12 +127,8 @@
             if(orderItems[id]['qty'] == 0)
                 removeCartItem(id);
 
+            updateTotal(-productList[id]['price']);
             updateProdStock(id, 1);
-        }
-
-        function removeCartItem(id)
-        {
-            $('[data-cartitem="'+id+'"]').remove();
         }
 
         function plusItemQty(id)
@@ -127,8 +136,14 @@
             if(productList[id]['stock'] > 0)
             {
                 orderItems[id]['qty']++;
+                updateTotal(productList[id]['price']);
                 updateProdStock(id, -1);
             }
+        }
+
+        function removeCartItem(id)
+        {
+            $('[data-cartitem="'+id+'"]').remove();
         }
 
         function setProdStock(id, value)
@@ -148,6 +163,7 @@
                 'qty' : 1,
             };
 
+            updateTotal(productList[id]['price']);
             updateProdStock(id, -1);
 
             var cartItem = `
